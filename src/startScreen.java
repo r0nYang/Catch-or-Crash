@@ -1,14 +1,20 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class startScreen extends JFrame {
 
+    gameScreen canvas;
+
     //create the GUI of the game
-    public startScreen() {
-        setTitle("Project V");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(600, 700);
-        setLocationRelativeTo(null);
-        setResizable(false);
-        setVisible(true);
+    startScreen() {
+
+        canvas = new gameScreen();
+
+        this.setTitle("Project V");
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.add(canvas);
+        this.pack();
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
     }
 }
