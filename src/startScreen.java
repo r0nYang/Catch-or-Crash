@@ -11,6 +11,7 @@ public class startScreen extends JFrame {
         canvas = new gameScreen();
 
         this.setTitle("Project V");
+        this.setResizable(false);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.add(canvas);
         this.pack();
