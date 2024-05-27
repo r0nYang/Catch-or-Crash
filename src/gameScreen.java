@@ -6,16 +6,15 @@ public class gameScreen extends JPanel implements KeyListener {
     final int PANEL_WIDTH = 600;
     final int PANEL_HEIGHT = 700;
     Image ballCatcher;
-    Image ball;
     Image test; // !!!!! del later
     int x = 250;
     int y = 550;
     int netWidth = 80;
     int netHeight = 80;
-    int ballWidth = 500;
-    int ballHeight = 290;
+    int ballWidth = 60;
+    int ballHeight = 60;
     Graphics g2D;
-    boolean isRunning = true;
+    boolean isRunning = false;
     listOfBalls balls;
     ball ball1;
     ball ball2;
@@ -35,19 +34,22 @@ public class gameScreen extends JPanel implements KeyListener {
         ball2 = new ball();
         balls.addBall(ball1);
         balls.addBall(ball2);
-        time = new Timer(1000, new ActionListener() {
+        time = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (ball b: balls.getBalls()) {
-                    b.setY(b.getY()+10);
-                    if (b.getY() > PANEL_HEIGHT) {
+                    if (b.getY() + 150>= PANEL_HEIGHT) {
                         isRunning=false;
+                        time.stop();
+                        // NEW window to indicate game over.
+                    } else {
+                        b.setY(b.getY()+50);
                     }
                     repaint();
                 }
             }
         });
-
+        time.start();
     }
 
     public void paint(Graphics g) {
@@ -56,8 +58,12 @@ public class gameScreen extends JPanel implements KeyListener {
         g2D.drawImage(test, x, y, netWidth, netHeight, null); // to check the hitbox of net
         g2D.drawImage(ballCatcher, x, y, netWidth, netHeight, null);
 //        g2D.drawImage(ball, 25, 25, ballWidth, ballHeight, null);
+
         for (ball b: balls.getBalls()) {
-            g2D.drawImage(b.ballImg, b.getX(), b.getY(), ballWidth, ballHeight, null);
+            g2D.drawImage(ball.ballImg, b.getX(), b.getY(), ballWidth, ballHeight, null);
+            if (b.getY()+ballHeight >= PANEL_HEIGHT) {
+                time.stop();
+            }
         }
 
     }
@@ -67,28 +73,25 @@ public class gameScreen extends JPanel implements KeyListener {
 
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            if (x > PANEL_WIDTH - 100) {
-                x += 0;
-            } else {
+            if (x+80+10 <= PANEL_WIDTH) {
                 x += 10;
+                repaint();
             }
-            repaint();
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            if (x < 20) {
-                x -= 0;
-            } else {
+            if (x-10 >= 0) {
                 x -= 10;
-            }
-            repaint();
-        } else if (e.getKeyCode() == KeyEvent.VK_T) {
-            if (!isRunning) {
-                isRunning=true;
-                time.start();
-            } else {
-                isRunning=false;
-                time.stop();
+                repaint();
             }
         }
+//        else if (e.getKeyCode() == KeyEvent.VK_T) {
+//            if (!isRunning) {
+//                isRunning=true;
+//                time.start();
+//            } else {
+//                isRunning=false;
+//                time.stop();
+//            }
+//        }
 
     }
 
