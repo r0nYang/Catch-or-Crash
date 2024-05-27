@@ -10,7 +10,7 @@ public class ball {
 
     public ball() {
         ballImg = new ImageIcon("src/Image/ball.png").getImage();
-        x= rand.nextInt(500);
+        x= rand.nextInt(600-60);
     }
 
     public int getX() {

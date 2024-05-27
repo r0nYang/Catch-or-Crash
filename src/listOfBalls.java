@@ -12,10 +12,6 @@ public class listOfBalls implements Iterable<ball> {
         }
     }
 
-    public void removeBall(ball b) {
-        balls.remove(b);
-    }
-
     public List<ball> getBalls() {
         return balls;
     }
