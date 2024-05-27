@@ -1,12 +1,14 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Iterator;
 import javax.swing.*;
+
+import static java.lang.Math.abs;
 
 public class gameScreen extends JPanel implements KeyListener {
     final int PANEL_WIDTH = 600;
     final int PANEL_HEIGHT = 700;
     Image ballCatcher;
-    Image test; // !!!!! del later
     int x = 250;
     int y = 550;
     int netWidth = 80;
@@ -27,14 +29,12 @@ public class gameScreen extends JPanel implements KeyListener {
         this.setPreferredSize(new Dimension(PANEL_WIDTH,PANEL_HEIGHT));
         this.setBackground(Color.white);
         ballCatcher = new ImageIcon("src/Image/net.png").getImage();
-//        ball = new ImageIcon("src/Image/ball.png").getImage();
-        test = new ImageIcon("src/Image/Capt22ure.png").getImage();
         balls = new listOfBalls();
         ball1 = new ball();
         ball2 = new ball();
         balls.addBall(ball1);
         balls.addBall(ball2);
-        time = new Timer(500, new ActionListener() {
+        time = new Timer(300, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (ball b: balls.getBalls()) {
@@ -55,16 +55,19 @@ public class gameScreen extends JPanel implements KeyListener {
     public void paint(Graphics g) {
         super.paint(g);
         g2D = (Graphics2D) g;
-        g2D.drawImage(test, x, y, netWidth, netHeight, null); // to check the hitbox of net
-        g2D.drawImage(ballCatcher, x, y, netWidth, netHeight, null);
 //        g2D.drawImage(ball, 25, 25, ballWidth, ballHeight, null);
-
-        for (ball b: balls.getBalls()) {
+        Iterator<ball> it = balls.iterator();
+        while (it.hasNext()) {
+            ball b = it.next();
             g2D.drawImage(ball.ballImg, b.getX(), b.getY(), ballWidth, ballHeight, null);
+            if (b.getY()>= y && abs(b.getX()-x) < 30) {
+                it.remove();
+            }
             if (b.getY()+ballHeight >= PANEL_HEIGHT) {
                 time.stop();
             }
         }
+        g2D.drawImage(ballCatcher, x, y, netWidth, netHeight, null);
 
     }
 

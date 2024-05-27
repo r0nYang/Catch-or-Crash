@@ -1,6 +1,6 @@
 import java.util.*;
-public class listOfBalls {
-    List<ball> balls;
+public class listOfBalls implements Iterable<ball> {
+    private List<ball> balls;
 
     public listOfBalls() {
         balls = new ArrayList<>();
@@ -12,8 +12,16 @@ public class listOfBalls {
         }
     }
 
+    public void removeBall(ball b) {
+        balls.remove(b);
+    }
+
     public List<ball> getBalls() {
         return balls;
     }
 
+    @Override
+    public Iterator<ball> iterator() {
+        return balls.iterator();
+    }
 }
