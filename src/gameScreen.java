@@ -8,7 +8,7 @@ import static java.lang.Math.abs;
 public class gameScreen extends JPanel implements KeyListener {
     final int PANEL_WIDTH = 600;
     final int PANEL_HEIGHT = 700;
-    final Image ballCatcher;
+    final Image ballCatcher = new ImageIcon("src/Image/net.png").getImage();;
     int netWidth = 80;
     int netHeight = 80;
     int ballCatcherX = PANEL_WIDTH - netWidth;
@@ -28,7 +28,6 @@ public class gameScreen extends JPanel implements KeyListener {
         this.setFocusable(true);
         this.setPreferredSize(new Dimension(PANEL_WIDTH,PANEL_HEIGHT));
         this.setBackground(Color.white);
-        ballCatcher = new ImageIcon("src/Image/net.png").getImage();
         balls = new listOfBalls();
         score.setText("Score: " + scoreNum);
         this.add(score);
@@ -71,10 +70,19 @@ public class gameScreen extends JPanel implements KeyListener {
             }
             if (b.getY()+ballHeight >= PANEL_HEIGHT) {
                 timer.stop();
+                endScreen(g);
             }
         }
         g2D.drawImage(ballCatcher, ballCatcherX, ballCatcherY, netWidth, netHeight, null);
 
+    }
+
+    public void endScreen(Graphics g) {
+        g.setColor(Color.red);
+        this.setBackground(Color.white);
+        g.setFont( new Font("Ink Free",Font.BOLD, 75));
+        FontMetrics metrics2 = getFontMetrics(g.getFont());
+        g.drawString("Game Over", (PANEL_WIDTH - metrics2.stringWidth("Game Over"))/2, PANEL_HEIGHT/2);
     }
 
     public void keyTyped(KeyEvent e) {
