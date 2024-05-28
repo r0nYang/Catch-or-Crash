@@ -7,7 +7,7 @@ public class listOfBalls implements Iterable<ball> {
     }
 
     public void addBall(ball b) {
-        if (!balls.contains(b)) {
+        if (!balls.contains(b)) { // maybe check if the balls are colliding instead?
             balls.add(b);
         }
     }

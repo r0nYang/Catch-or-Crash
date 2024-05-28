@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class ball {
     private int x;
-    private int y = 10;
+    private int y = 50;
     public static Image ballImg;
     Random rand = new Random();
 

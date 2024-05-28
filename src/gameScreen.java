@@ -8,18 +8,16 @@ import static java.lang.Math.abs;
 public class gameScreen extends JPanel implements KeyListener {
     final int PANEL_WIDTH = 600;
     final int PANEL_HEIGHT = 700;
-    Image ballCatcher;
-    int ballCatcherX = 250;
-    int ballCatcherY = 550;
+    final Image ballCatcher;
     int netWidth = 80;
     int netHeight = 80;
-    int ballWidth = 60;
-    int ballHeight = 60;
-    Graphics g2D;
+    int ballCatcherX = PANEL_WIDTH - netWidth;
+    int ballCatcherY = PANEL_HEIGHT-netHeight;
+    int ballWidth = 50;
+    int ballHeight = 50;
     listOfBalls balls;
-    ball ball1;
-    ball ball2;
     private final Timer timer;
+    Iterator<ball> it;
 
 
     gameScreen() {
@@ -29,22 +27,20 @@ public class gameScreen extends JPanel implements KeyListener {
         this.setBackground(Color.white);
         ballCatcher = new ImageIcon("src/Image/net.png").getImage();
         balls = new listOfBalls();
-        ball1 = new ball();
-        ball2 = new ball();
-        balls.addBall(ball1);
-        balls.addBall(ball2);
-        timer = new Timer(300, new ActionListener() {
+        timer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (ball b: balls.getBalls()) {
-                    if (b.getY() + 150>= PANEL_HEIGHT) {
+                    if (b.getY() + ballHeight>= PANEL_HEIGHT) {
                         timer.stop();
                         // NEW window to indicate game over.
                     } else {
-                        b.setY(b.getY()+50);
+                        b.setY(b.getY()+10);
                     }
                     repaint();
                 }
+                ball newBall = new ball(); // ADD DELAY
+                balls.addBall(newBall);
             }
         });
         timer.start();
@@ -52,8 +48,8 @@ public class gameScreen extends JPanel implements KeyListener {
 
     public void paint(Graphics g) {
         super.paint(g);
-        g2D = (Graphics2D) g;
-        Iterator<ball> it = balls.iterator();
+        Graphics g2D = (Graphics2D) g;
+        it = balls.iterator(); // MOVE TO FIELD?
         while (it.hasNext()) {
             ball b = it.next();
             g2D.drawImage(ball.ballImg, b.getX(), b.getY(), ballWidth, ballHeight, null);
