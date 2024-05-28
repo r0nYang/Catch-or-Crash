@@ -18,6 +18,9 @@ public class gameScreen extends JPanel implements KeyListener {
     listOfBalls balls;
     private final Timer timer;
     Iterator<ball> it;
+    int currentNum;
+    int scoreNum = 0;
+    JLabel score = new JLabel();
 
 
     gameScreen() {
@@ -27,6 +30,8 @@ public class gameScreen extends JPanel implements KeyListener {
         this.setBackground(Color.white);
         ballCatcher = new ImageIcon("src/Image/net.png").getImage();
         balls = new listOfBalls();
+        score.setText("Score: " + scoreNum);
+        this.add(score);
         timer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -39,8 +44,14 @@ public class gameScreen extends JPanel implements KeyListener {
                     }
                     repaint();
                 }
-                ball newBall = new ball(); // ADD DELAY
-                balls.addBall(newBall);
+                if (currentNum >= 15) {
+                    ball newBall = new ball(); // ADD DELAY
+                    balls.addBall(newBall);
+                    currentNum = 0;
+                } else {
+                    currentNum++;
+                }
+
             }
         });
         timer.start();
@@ -53,8 +64,10 @@ public class gameScreen extends JPanel implements KeyListener {
         while (it.hasNext()) {
             ball b = it.next();
             g2D.drawImage(ball.ballImg, b.getX(), b.getY(), ballWidth, ballHeight, null);
-            if (b.getY()>= ballCatcherY && abs(b.getX()- ballCatcherX) < 20) { // !!! FIND CENTER
+            if (b.getY()>= ballCatcherY && abs((b.getX() + ballWidth/2) - (ballCatcherX + netWidth/2)) < 40) { // !!! FIND CENTER
                 it.remove();
+                scoreNum++;
+                score.setText("Score: " + scoreNum);
             }
             if (b.getY()+ballHeight >= PANEL_HEIGHT) {
                 timer.stop();
@@ -70,12 +83,12 @@ public class gameScreen extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             if (ballCatcherX +80+10 <= PANEL_WIDTH) {
-                ballCatcherX += 10;
+                ballCatcherX += 15;
                 repaint();
             }
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             if (ballCatcherX -10 >= 0) {
-                ballCatcherX -= 10;
+                ballCatcherX -= 15;
                 repaint();
             }
         }
