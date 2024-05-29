@@ -15,12 +15,14 @@ public class gameScreen extends JPanel implements KeyListener {
     int ballCatcherY = PANEL_HEIGHT-netHeight;
     int ballWidth = 50;
     int ballHeight = 50;
-    listOfBalls balls;
+    listOfBalls fallingObjects;
     private final Timer timer;
-    Iterator<ball> it;
-    int currentNum;
+    Iterator<fallingObject> it;
+    int spawnBallCountDown = 100;
+    int spawnBombCountDown = 35;
     int scoreNum = 0;
     JLabel score = new JLabel();
+    Graphics g2D;
 
 
     gameScreen() {
@@ -28,27 +30,32 @@ public class gameScreen extends JPanel implements KeyListener {
         this.setFocusable(true);
         this.setPreferredSize(new Dimension(PANEL_WIDTH,PANEL_HEIGHT));
         this.setBackground(Color.white);
-        balls = new listOfBalls();
+        fallingObjects = new listOfBalls();
         score.setText("Score: " + scoreNum);
         this.add(score);
         timer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (ball b: balls.getBalls()) {
-                    if (b.getY() + ballHeight>= PANEL_HEIGHT) {
+                for (fallingObject fallingObject: fallingObjects.getFallingObjects()) {
+                    if (fallingObject.getY() + ballHeight>= PANEL_HEIGHT && fallingObject instanceof ball) {
                         timer.stop();
-                        // NEW window to indicate game over.
+                        endScreen(g2D);
                     } else {
-                        b.setY(b.getY()+10);
+                        fallingObject.setY(fallingObject.getY()+10);
                     }
                     repaint();
                 }
-                if (currentNum >= 15) {
-                    ball newBall = new ball(); // ADD DELAY
-                    balls.addBall(newBall);
-                    currentNum = 0;
+                if (spawnBallCountDown == 0) {
+                    fallingObject newBall = new ball();
+                    fallingObjects.addFallingObject(newBall);
+                    spawnBallCountDown = 100;
+                } else if (spawnBombCountDown == 0){
+                    fallingObject newBomb = new bomb();
+                    fallingObjects.addFallingObject(newBomb);
+                    spawnBombCountDown = 35;
                 } else {
-                    currentNum++;
+                    spawnBallCountDown--;
+                    spawnBombCountDown--;
                 }
             }
         });
@@ -57,23 +64,36 @@ public class gameScreen extends JPanel implements KeyListener {
 
     public void paint(Graphics g) {
         super.paint(g);
-        Graphics g2D = (Graphics2D) g;
-        it = balls.iterator(); // MOVE TO FIELD?
+        g2D = (Graphics2D) g;
+        it = fallingObjects.iterator();
         while (it.hasNext()) {
-            ball b = it.next();
-            g2D.drawImage(ball.ballImg, b.getX(), b.getY(), ballWidth, ballHeight, null);
-            if (b.getY()>= ballCatcherY && abs((b.getX() + ballWidth/2) - (ballCatcherX + netWidth/2)) < 40) { // !!! FIND CENTER
-                it.remove();
-                scoreNum++;
-                score.setText("Score: " + scoreNum);
-            }
-            if (b.getY()+ballHeight >= PANEL_HEIGHT) {
-                timer.stop();
-                endScreen(g);
-            }
+            fallingObject fObj = it.next();
+
+            g2D.drawImage(fObj.objectImage, fObj.getX(), fObj.getY(), ballWidth, ballHeight, null);
+            checkForCollision(fObj, g);
+//            if (fObj.getY()+ballHeight >= PANEL_HEIGHT) { // HAVE TO CHECK FOR BOMB
+//                timer.stop();
+//                endScreen(g2D);
+//            }
         }
         g2D.drawImage(ballCatcher, ballCatcherX, ballCatcherY, netWidth, netHeight, null);
 
+    }
+
+    private void checkForCollision(fallingObject fObj, Graphics g) {
+        int objectCenter = fObj.getX() + ballWidth / 2;
+        int netCenter = ballCatcherX + netWidth / 2;
+        if (fObj.getY()>= ballCatcherY && abs(objectCenter - netCenter) < 40) {
+            if (fObj instanceof ball) {
+                it.remove();
+                scoreNum++;
+                score.setText("Score: " + scoreNum);
+            } else { // it must otherwise be a bomb
+                timer.stop();
+                endScreen(g);
+            }
+
+        }
     }
 
     public void endScreen(Graphics g) {
@@ -90,12 +110,12 @@ public class gameScreen extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             if (ballCatcherX +80+10 <= PANEL_WIDTH) {
-                ballCatcherX += 15;
+                ballCatcherX += 20;
                 repaint();
             }
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             if (ballCatcherX -10 >= 0) {
-                ballCatcherX -= 15;
+                ballCatcherX -= 20;
                 repaint();
             }
         }
