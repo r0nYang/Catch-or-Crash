@@ -50,7 +50,6 @@ public class gameScreen extends JPanel implements KeyListener {
                 } else {
                     currentNum++;
                 }
-
             }
         });
         timer.start();
