@@ -15,7 +15,7 @@ public class gameScreen extends JPanel implements KeyListener {
     int ballCatcherY = PANEL_HEIGHT-netHeight;
     int ballWidth = 50;
     int ballHeight = 50;
-    listOfBalls fallingObjects;
+    listOfFallingObjects fallingObjects;
     private final Timer timer;
     Iterator<fallingObject> it;
     int spawnBallCountDown = 100;
@@ -23,6 +23,7 @@ public class gameScreen extends JPanel implements KeyListener {
     int scoreNum = 0;
     JLabel score = new JLabel();
     Graphics g2D;
+    boolean acceptKeyPress = true;
 
 
     gameScreen() {
@@ -30,19 +31,25 @@ public class gameScreen extends JPanel implements KeyListener {
         this.setFocusable(true);
         this.setPreferredSize(new Dimension(PANEL_WIDTH,PANEL_HEIGHT));
         this.setBackground(Color.white);
-        fallingObjects = new listOfBalls();
+        fallingObjects = new listOfFallingObjects();
         score.setText("Score: " + scoreNum);
         this.add(score);
         timer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (fallingObject fallingObject: fallingObjects.getFallingObjects()) {
-                    if (fallingObject.getY() + ballHeight>= PANEL_HEIGHT && fallingObject instanceof ball) {
-                        timer.stop();
-                        endScreen(g2D);
-                    } else {
-                        fallingObject.setY(fallingObject.getY()+10);
-                    }
+                for (fallingObject obj: fallingObjects.getFallingObjects()) {
+//                    if (obj.getY() + ballHeight>= PANEL_HEIGHT) {
+//                        if (obj instanceof ball) {
+//                            timer.stop();
+//                            endScreen(g2D);
+//                        } else { // must be a bomb otherwise
+//                            fallingObjects.rem
+//                        }
+//
+//                    } else {
+//                        obj.setY(obj.getY()+10);
+//                    }
+                    obj.setY(obj.getY()+10);
                     repaint();
                 }
                 if (spawnBallCountDown == 0) {
@@ -71,13 +78,24 @@ public class gameScreen extends JPanel implements KeyListener {
 
             g2D.drawImage(fObj.objectImage, fObj.getX(), fObj.getY(), ballWidth, ballHeight, null);
             checkForCollision(fObj, g);
-//            if (fObj.getY()+ballHeight >= PANEL_HEIGHT) { // HAVE TO CHECK FOR BOMB
-//                timer.stop();
-//                endScreen(g2D);
-//            }
+            checkForBoundary(g, fObj);
         }
         g2D.drawImage(ballCatcher, ballCatcherX, ballCatcherY, netWidth, netHeight, null);
 
+    }
+
+    private void checkForBoundary(Graphics g, fallingObject fObj) {
+        if (fObj.getY()+ballHeight >= PANEL_HEIGHT) { // HAVE TO CHECK FOR BOMB
+            if (fObj.getY() + ballHeight>= PANEL_HEIGHT) {
+                if (fObj instanceof ball) {
+                    timer.stop();
+                    acceptKeyPress = false;
+                    endScreen(g);
+                } else { // must be a bomb otherwise
+                    it.remove();
+                }
+            }
+        }
     }
 
     private void checkForCollision(fallingObject fObj, Graphics g) {
@@ -88,8 +106,9 @@ public class gameScreen extends JPanel implements KeyListener {
                 it.remove();
                 scoreNum++;
                 score.setText("Score: " + scoreNum);
-            } else { // it must otherwise be a bomb
+            } else { // must otherwise be a bomb
                 timer.stop();
+                acceptKeyPress = false;
                 endScreen(g);
             }
 
@@ -108,12 +127,12 @@ public class gameScreen extends JPanel implements KeyListener {
     }
 
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT && acceptKeyPress) {
             if (ballCatcherX +80+10 <= PANEL_WIDTH) {
                 ballCatcherX += 20;
                 repaint();
             }
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT && acceptKeyPress) {
             if (ballCatcherX -10 >= 0) {
                 ballCatcherX -= 20;
                 repaint();

@@ -1,8 +1,8 @@
 import java.util.*;
-public class listOfBalls implements Iterable<fallingObject> {
+public class listOfFallingObjects implements Iterable<fallingObject> {
     private List<fallingObject> fallingObjects;
 
-    public listOfBalls() {
+    public listOfFallingObjects() {
         fallingObjects = new ArrayList<>();
     }
 
