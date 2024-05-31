@@ -12,16 +12,15 @@ public class gameScreen extends JPanel implements KeyListener {
     int netWidth = 80;
     int netHeight = 80;
     int ballCatcherX = PANEL_WIDTH - netWidth;
-    int ballCatcherY = PANEL_HEIGHT-netHeight;
+    int ballCatcherY = PANEL_HEIGHT-netHeight - 15;
     int ballWidth = 50;
     int ballHeight = 50;
     listOfFallingObjects fallingObjects;
     private final Timer timer;
     Iterator<fallingObject> it;
-    int spawnBallCountDown = 100;
+    int spawnBallCountDown = 15;
     int spawnBombCountDown = 35;
     int scoreNum = 0;
-    JLabel score = new JLabel();
     Graphics g2D;
     boolean acceptKeyPress = true;
 
@@ -32,8 +31,6 @@ public class gameScreen extends JPanel implements KeyListener {
         this.setPreferredSize(new Dimension(PANEL_WIDTH,PANEL_HEIGHT));
         this.setBackground(Color.white);
         fallingObjects = new listOfFallingObjects();
-        score.setText("Score: " + scoreNum);
-        this.add(score);
         timer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -55,7 +52,7 @@ public class gameScreen extends JPanel implements KeyListener {
                 if (spawnBallCountDown == 0) {
                     fallingObject newBall = new ball();
                     fallingObjects.addFallingObject(newBall);
-                    spawnBallCountDown = 100;
+                    spawnBallCountDown = 15;
                 } else if (spawnBombCountDown == 0){
                     fallingObject newBomb = new bomb();
                     fallingObjects.addFallingObject(newBomb);
@@ -81,7 +78,10 @@ public class gameScreen extends JPanel implements KeyListener {
             checkForBoundary(g, fObj);
         }
         g2D.drawImage(ballCatcher, ballCatcherX, ballCatcherY, netWidth, netHeight, null);
-
+        g.setColor(Color.red);
+        g.setFont( new Font("Lucida Sans Unicode",Font.BOLD, 20));
+        FontMetrics metrics = getFontMetrics(g.getFont());
+        g.drawString("Score: "+ scoreNum, (metrics.stringWidth("Score: "+ scoreNum)) - netWidth + 10, g.getFont().getSize());
     }
 
     private void checkForBoundary(Graphics g, fallingObject fObj) {
@@ -105,7 +105,6 @@ public class gameScreen extends JPanel implements KeyListener {
             if (fObj instanceof ball) {
                 it.remove();
                 scoreNum++;
-                score.setText("Score: " + scoreNum);
             } else { // must otherwise be a bomb
                 timer.stop();
                 acceptKeyPress = false;
@@ -118,9 +117,13 @@ public class gameScreen extends JPanel implements KeyListener {
     public void endScreen(Graphics g) {
         g.setColor(Color.red);
         this.setBackground(Color.white);
-        g.setFont( new Font("Ink Free",Font.BOLD, 75));
+        g.setFont( new Font("Lucida Sans Unicode",Font.BOLD, 75));
         FontMetrics metrics2 = getFontMetrics(g.getFont());
         g.drawString("Game Over", (PANEL_WIDTH - metrics2.stringWidth("Game Over"))/2, PANEL_HEIGHT/2);
+    }
+
+    public void menuScreen() {
+
     }
 
     public void keyTyped(KeyEvent e) {
