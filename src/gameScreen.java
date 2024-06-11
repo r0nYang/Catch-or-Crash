@@ -16,9 +16,9 @@ public class gameScreen extends JPanel implements KeyListener {
     int ballWidth = 50;
     int ballHeight = 50;
     listOfFallingObjects fallingObjects;
-    private final Timer timer;
+    public final Timer timer;
     Iterator<fallingObject> it;
-    int spawnBallCountDown = 100;
+    int spawnBallCountDown = 15;
     int spawnBombCountDown = 35;
     int scoreNum = 0;
     JLabel score = new JLabel();
@@ -34,28 +34,19 @@ public class gameScreen extends JPanel implements KeyListener {
         fallingObjects = new listOfFallingObjects();
         score.setText("Score: " + scoreNum);
         this.add(score);
+        JButton restartButton = getjButton();
+        this.add(restartButton);
         timer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (fallingObject obj: fallingObjects.getFallingObjects()) {
-//                    if (obj.getY() + ballHeight>= PANEL_HEIGHT) {
-//                        if (obj instanceof ball) {
-//                            timer.stop();
-//                            endScreen(g2D);
-//                        } else { // must be a bomb otherwise
-//                            fallingObjects.rem
-//                        }
-//
-//                    } else {
-//                        obj.setY(obj.getY()+10);
-//                    }
                     obj.setY(obj.getY()+10);
                     repaint();
                 }
                 if (spawnBallCountDown == 0) {
                     fallingObject newBall = new ball();
                     fallingObjects.addFallingObject(newBall);
-                    spawnBallCountDown = 100;
+                    spawnBallCountDown = 15;
                 } else if (spawnBombCountDown == 0){
                     fallingObject newBomb = new bomb();
                     fallingObjects.addFallingObject(newBomb);
@@ -67,6 +58,24 @@ public class gameScreen extends JPanel implements KeyListener {
             }
         });
         timer.start();
+    }
+
+    private JButton getjButton() {
+        JButton restartButton = new JButton(new AbstractAction("Restart") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fallingObjects = new listOfFallingObjects();
+                scoreNum=0;
+                acceptKeyPress=true;
+                timer.start();
+                requestFocusInWindow(); // resets focus of the panel; enables net movement after restarting game.
+            }
+        });
+        restartButton.setFont(new Font("Arial", Font.BOLD, 18));
+        restartButton.setBackground(Color.WHITE);
+        restartButton.setFocusPainted(false);
+        restartButton.setBorderPainted(false);
+        return restartButton;
     }
 
     public void paint(Graphics g) {
