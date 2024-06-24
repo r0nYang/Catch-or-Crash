@@ -10,14 +10,14 @@ public class listOfFallingObjects implements Iterable<fallingObject> {
     }
 
     public void addFallingObject(fallingObject obj) {
-        if (notColliding(obj)) { // maybe check if the balls are colliding instead?
+        if (notColliding(obj)) {
             fallingObjects.add(obj);
         }
     }
 
     private boolean notColliding(fallingObject obj) {
         for (fallingObject f: fallingObjects) {
-            if (abs(obj.getX() - f.getX()) < 10 && abs(obj.getY() - f.getY()) < 30) {
+            if (abs(obj.getX() - f.getX()) < 20 && abs(obj.getY() - f.getY()) < 40) {
                 return false;
             }
         }

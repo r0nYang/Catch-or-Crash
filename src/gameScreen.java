@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Iterator;
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import static java.lang.Math.abs;
 
@@ -32,6 +33,7 @@ public class gameScreen extends JPanel implements KeyListener {
         this.setBackground(Color.white);
         fallingObjects = new listOfFallingObjects();
         JButton restartButton = getjButton();
+        this.setLayout(new FlowLayout(FlowLayout.RIGHT));
         this.add(restartButton);
 
         timer = new Timer(100, new ActionListener() {
@@ -42,12 +44,10 @@ public class gameScreen extends JPanel implements KeyListener {
                     repaint();
                 }
                 if (spawnBallCountDown == 0) {
-                    fallingObject newBall = new ball();
-                    fallingObjects.addFallingObject(newBall);
+                    fallingObjects.addFallingObject(new ball());
                     spawnBallCountDown = 15;
                 } else if (spawnBombCountDown == 0){
-                    fallingObject newBomb = new bomb();
-                    fallingObjects.addFallingObject(newBomb);
+                    fallingObjects.addFallingObject(new bomb());
                     spawnBombCountDown = 35;
                 } else {
                     spawnBallCountDown--;
